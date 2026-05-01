@@ -8,12 +8,11 @@ Live URL: https://web-production-7c4d1.up.railway.app
 
 <img width="1918" height="981" alt="Screenshot 2026-05-01 234356" src="https://github.com/user-attachments/assets/7e3a9f3b-d98d-4994-b3b4-e0756418e937" />
 
-<img width="1918" height="973" alt="project-05-01 234709" src="https://github.com/user-attachments/assets/bbfbaec3-c641-483c-9e27-b7b965f7a414" />
-
 <img width="1918" height="986" alt="task manager234356" src="https://github.com/user-attachments/assets/0f5251d9-89f8-4290-8f8f-f32412dd1879" />
 
+<img width="1918" height="973" alt="project-05-01 234709" src="https://github.com/user-attachments/assets/bbfbaec3-c641-483c-9e27-b7b965f7a414" />
 
-
+<img width="1918" height="962" alt="task2026-05-01 234758" src="https://github.com/user-attachments/assets/59a1a4fa-0b59-48af-b710-0246b881378f" />
 
 - User signup, login, and logout
 - JWT authentication stored in cookies
