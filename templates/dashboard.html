@@ -1,36 +1,45 @@
 {% extends "base.html" %}
 {% block title %}Dashboard · Team Task Manager{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
     <div>
-        <h1 class="h2 mb-1">Dashboard</h1>
+        <div class="text-uppercase text-primary fw-bold small mb-1">Overview</div>
+        <h1 class="page-title h2 mb-1">Dashboard</h1>
         <p class="text-muted mb-0">Task summary for {{ current_user.username }}.</p>
     </div>
+    <a class="btn btn-primary" href="/tasks"><i class="bi bi-check2-square me-2"></i>View Tasks</a>
 </div>
 
 <div class="row g-3 mb-4">
-    {% for label, key, color in [
-        ("Total", "total", "primary"),
-        ("Todo", "todo", "secondary"),
-        ("In Progress", "in_progress", "warning"),
-        ("Done", "done", "success"),
-        ("Overdue", "overdue", "danger")
+    {% for label, key, icon, color in [
+        ("Total Tasks", "total", "bi-list-task", "blue"),
+        ("Todo", "todo", "bi-exclamation-circle", "red"),
+        ("In Progress", "in_progress", "bi-hourglass-split", "yellow"),
+        ("Done", "done", "bi-check-circle", "green"),
+        ("Overdue", "overdue", "bi-alarm", "dark")
     ] %}
-    <div class="col-6 col-lg">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <div class="text-muted small">{{ label }}</div>
-                <div class="display-6 text-{{ color }}">{{ stats[key] }}</div>
+    <div class="col-sm-6 col-xl">
+        <div class="soft-card stat-card h-100">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="stat-icon stat-{{ color }}"><i class="bi {{ icon }}"></i></div>
+                    <span class="badge rounded-pill text-bg-light">{{ label }}</span>
+                </div>
+                <div class="display-6 fw-bold mb-1">{{ stats[key] }}</div>
+                <div class="text-muted small">Current assigned work</div>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
 
-<div class="card shadow-sm">
-    <div class="card-header bg-white fw-semibold">Recent Tasks</div>
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
+<div class="soft-card">
+    <div class="card-header bg-white border-0 p-4 pb-0">
+        <h2 class="h5 fw-bold mb-1">Recent Tasks</h2>
+        <p class="text-muted mb-0">Latest assigned tasks and due dates.</p>
+    </div>
+    <div class="table-responsive p-3">
+        <table class="table table-modern table-hover align-middle mb-0">
             <thead>
             <tr>
                 <th>Title</th>
@@ -43,14 +52,24 @@
             <tbody>
             {% for task in tasks[:10] %}
             <tr>
-                <td>{{ task.title }}</td>
+                <td class="fw-semibold">{{ task.title }}</td>
                 <td>{{ task.project.name }}</td>
                 <td>{{ task.assigned_user.username }}</td>
                 <td>{{ task.due_date }}</td>
-                <td><span class="badge text-bg-secondary">{{ task.status.replace("_", " ")|title }}</span></td>
+                <td>
+                    {% if task.status != 'done' and task.due_date < today %}
+                    <span class="status-badge status-overdue">Overdue</span>
+                    {% elif task.status == 'done' %}
+                    <span class="status-badge status-done">Done</span>
+                    {% elif task.status == 'in_progress' %}
+                    <span class="status-badge status-in-progress">In Progress</span>
+                    {% else %}
+                    <span class="status-badge status-todo">Todo</span>
+                    {% endif %}
+                </td>
             </tr>
             {% else %}
-            <tr><td colspan="5" class="text-center text-muted py-4">No tasks yet.</td></tr>
+            <tr><td colspan="5" class="text-center text-muted py-5">No tasks yet.</td></tr>
             {% endfor %}
             </tbody>
         </table>

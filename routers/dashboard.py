@@ -23,5 +23,11 @@ def dashboard(request: Request, db: Session = Depends(get_db), current_user: Use
     }
     return request.app.state.templates.TemplateResponse(
         "dashboard.html",
-        {"request": request, "current_user": current_user, "stats": stats, "tasks": tasks},
+        {
+            "request": request,
+            "current_user": current_user,
+            "stats": stats,
+            "tasks": tasks,
+            "today": date.today(),
+        },
     )

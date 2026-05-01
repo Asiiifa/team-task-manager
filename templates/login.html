@@ -1,24 +1,52 @@
 {% extends "base.html" %}
 {% block title %}Login · Team Task Manager{% endblock %}
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
-                <h1 class="h3 mb-3">Login</h1>
+<div class="auth-panel">
+    <div class="row g-0">
+        <div class="col-lg-6 d-none d-lg-block">
+            <div class="auth-hero h-100">
+                <div class="d-inline-flex align-items-center gap-2 rounded-pill bg-white bg-opacity-10 px-3 py-2 mb-4">
+                    <i class="bi bi-shield-check"></i>
+                    <span class="small fw-semibold">Secure team workspace</span>
+                </div>
+                <h1 class="display-5 mb-3">Organize projects with clarity.</h1>
+                <p class="lead text-white-50 mb-5">Track tasks, due dates, assignments, and progress from one focused dashboard.</p>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="rounded-4 bg-white bg-opacity-10 p-3">
+                            <i class="bi bi-kanban fs-3"></i>
+                            <div class="fw-semibold mt-2">Kanban Flow</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="rounded-4 bg-white bg-opacity-10 p-3">
+                            <i class="bi bi-people fs-3"></i>
+                            <div class="fw-semibold mt-2">Role Access</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="p-4 p-md-5">
+                <div class="mb-4">
+                    <div class="brand-mark mb-3"><i class="bi bi-kanban"></i></div>
+                    <h1 class="h2 fw-bold mb-1">Welcome back</h1>
+                    <p class="text-muted mb-0">Sign in to continue managing team tasks.</p>
+                </div>
                 {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
                 <form method="post" action="/login">
                     <div class="mb-3">
                         <label class="form-label" for="username_or_email">Username or Email</label>
-                        <input class="form-control" id="username_or_email" name="username_or_email" value="{{ username_or_email or '' }}" required>
+                        <input class="form-control form-control-lg" id="username_or_email" name="username_or_email" value="{{ username_or_email or '' }}" required>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <label class="form-label" for="password">Password</label>
-                        <input class="form-control" id="password" name="password" type="password" required>
+                        <input class="form-control form-control-lg" id="password" name="password" type="password" required>
                     </div>
-                    <button class="btn btn-primary w-100" type="submit">Login</button>
+                    <button class="btn btn-primary btn-lg w-100" type="submit">Login</button>
                 </form>
-                <p class="mt-3 mb-0 text-center">No account? <a href="/signup">Create one</a></p>
+                <p class="mt-4 mb-0 text-center text-muted">No account? <a class="fw-semibold" href="/signup">Create one</a></p>
             </div>
         </div>
     </div>

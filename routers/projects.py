@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
+from datetime import date
 
 from auth import get_current_user, require_admin
 from database import get_db
@@ -62,7 +63,13 @@ def project_detail(
     users = db.query(User).order_by(User.username).all() if current_user.role == "admin" else []
     return request.app.state.templates.TemplateResponse(
         "project_detail.html",
-        {"request": request, "current_user": current_user, "project": project, "users": users},
+        {
+            "request": request,
+            "current_user": current_user,
+            "project": project,
+            "users": users,
+            "today": date.today(),
+        },
     )
 
 
