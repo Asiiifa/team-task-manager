@@ -87,9 +87,9 @@
                         {% endif %}
                         <form class="d-flex gap-2" method="post" action="/tasks/{{ task.id }}/status">
                             <select class="form-select form-select-sm" name="status">
-                                {% for value, label in [("todo", "Todo"), ("in_progress", "In Progress"), ("done", "Done")] %}
-                                <option value="{{ value }}" {% if task.status == value %}selected{% endif %}>{{ label }}</option>
-                                {% endfor %}
+                                <option value="todo" {% if task.status == "todo" %}selected{% endif %}>Todo</option>
+                                <option value="in_progress" {% if task.status == "in_progress" %}selected{% endif %}>In Progress</option>
+                                <option value="done" {% if task.status == "done" %}selected{% endif %}>Done</option>
                             </select>
                             <button class="btn btn-outline-primary btn-sm" type="submit">Update</button>
                         </form>

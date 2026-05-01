@@ -25,7 +25,7 @@
                 <div class="d-flex flex-column gap-2">
                     {% for member in project.members %}
                     <div class="d-flex align-items-center gap-3 rounded-4 border p-3">
-                        <div class="brand-mark bg-primary bg-opacity-10 text-primary">{{ member.user.username[:1]|upper }}</div>
+                        <div class="brand-mark bg-primary bg-opacity-10 text-primary"><i class="bi bi-person"></i></div>
                         <div>
                             <div class="fw-semibold">{{ member.user.username }}</div>
                             <div class="text-muted small">{{ member.user.role|title }}</div>
@@ -98,66 +98,100 @@
     {% endif %}
 </div>
 
+{% macro task_card(task) %}
+<article class="kanban-task">
+    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+        <h3 class="h6 fw-bold mb-0">{{ task.title }}</h3>
+        {% if task.status != 'done' and task.due_date < today %}
+        <span class="status-badge status-overdue">Overdue</span>
+        {% elif task.status == 'done' %}
+        <span class="status-badge status-done">Done</span>
+        {% elif task.status == 'in_progress' %}
+        <span class="status-badge status-in-progress">In Progress</span>
+        {% else %}
+        <span class="status-badge status-todo">Todo</span>
+        {% endif %}
+    </div>
+    <p class="text-muted small mb-3">{{ task.description or "No description" }}</p>
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        <span class="badge rounded-pill text-bg-light"><i class="bi bi-person me-1"></i>{{ task.assigned_user.username }}</span>
+        <span class="badge rounded-pill text-bg-light"><i class="bi bi-calendar3 me-1"></i>{{ task.due_date }}</span>
+    </div>
+    {% if current_user.role == "admin" or task.assigned_user_id == current_user.id %}
+    <form class="d-flex gap-2 mb-2" method="post" action="/tasks/{{ task.id }}/status">
+        <input type="hidden" name="next_url" value="/projects/{{ project.id }}">
+        <select class="form-select form-select-sm" name="status">
+            <option value="todo" {% if task.status == "todo" %}selected{% endif %}>Todo</option>
+            <option value="in_progress" {% if task.status == "in_progress" %}selected{% endif %}>In Progress</option>
+            <option value="done" {% if task.status == "done" %}selected{% endif %}>Done</option>
+        </select>
+        <button class="btn btn-outline-primary btn-sm" type="submit">Update</button>
+    </form>
+    {% endif %}
+    {% if current_user.role == "admin" %}
+    <form method="post" action="/tasks/{{ task.id }}/delete">
+        <button class="btn btn-outline-danger btn-sm w-100" type="submit"><i class="bi bi-trash me-1"></i>Delete</button>
+    </form>
+    {% endif %}
+</article>
+{% endmacro %}
+
 <div class="kanban-board">
-    {% for column_status, column_label, icon, color in [
-        ("todo", "Todo", "bi-exclamation-circle", "red"),
-        ("in_progress", "In Progress", "bi-hourglass-split", "yellow"),
-        ("done", "Done", "bi-check-circle", "green")
-    ] %}
     <section class="kanban-column">
         <div class="d-flex align-items-center justify-content-between mb-3">
             <div class="d-flex align-items-center gap-2">
-                <div class="stat-icon stat-{{ color }}"><i class="bi {{ icon }}"></i></div>
-                <h2 class="h6 fw-bold mb-0">{{ column_label }}</h2>
+                <div class="stat-icon stat-red"><i class="bi bi-exclamation-circle"></i></div>
+                <h2 class="h6 fw-bold mb-0">Todo</h2>
             </div>
         </div>
-
         {% set ns = namespace(count=0) %}
         {% for task in project.tasks %}
-        {% if task.status == column_status %}
+        {% if task.status == "todo" %}
         {% set ns.count = ns.count + 1 %}
-        <article class="kanban-task">
-            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                <h3 class="h6 fw-bold mb-0">{{ task.title }}</h3>
-                {% if task.status != 'done' and task.due_date < today %}
-                <span class="status-badge status-overdue">Overdue</span>
-                {% elif task.status == 'done' %}
-                <span class="status-badge status-done">Done</span>
-                {% elif task.status == 'in_progress' %}
-                <span class="status-badge status-in-progress">In Progress</span>
-                {% else %}
-                <span class="status-badge status-todo">Todo</span>
-                {% endif %}
-            </div>
-            <p class="text-muted small mb-3">{{ task.description or "No description" }}</p>
-            <div class="d-flex flex-wrap gap-2 mb-3">
-                <span class="badge rounded-pill text-bg-light"><i class="bi bi-person me-1"></i>{{ task.assigned_user.username }}</span>
-                <span class="badge rounded-pill text-bg-light"><i class="bi bi-calendar3 me-1"></i>{{ task.due_date }}</span>
-            </div>
-            {% if current_user.role == "admin" or task.assigned_user_id == current_user.id %}
-            <form class="d-flex gap-2 mb-2" method="post" action="/tasks/{{ task.id }}/status">
-                <input type="hidden" name="next_url" value="/projects/{{ project.id }}">
-                <select class="form-select form-select-sm" name="status">
-                    {% for value, label in [("todo", "Todo"), ("in_progress", "In Progress"), ("done", "Done")] %}
-                    <option value="{{ value }}" {% if task.status == value %}selected{% endif %}>{{ label }}</option>
-                    {% endfor %}
-                </select>
-                <button class="btn btn-outline-primary btn-sm" type="submit">Update</button>
-            </form>
-            {% endif %}
-            {% if current_user.role == "admin" %}
-            <form method="post" action="/tasks/{{ task.id }}/delete">
-                <button class="btn btn-outline-danger btn-sm w-100" type="submit"><i class="bi bi-trash me-1"></i>Delete</button>
-            </form>
-            {% endif %}
-        </article>
+        {{ task_card(task) }}
         {% endif %}
         {% endfor %}
-
         {% if ns.count == 0 %}
-        <div class="text-center text-muted small py-5">No {{ column_label|lower }} tasks.</div>
+        <div class="text-center text-muted small py-5">No todo tasks.</div>
         {% endif %}
     </section>
-    {% endfor %}
+
+    <section class="kanban-column">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <div class="stat-icon stat-yellow"><i class="bi bi-hourglass-split"></i></div>
+                <h2 class="h6 fw-bold mb-0">In Progress</h2>
+            </div>
+        </div>
+        {% set ns = namespace(count=0) %}
+        {% for task in project.tasks %}
+        {% if task.status == "in_progress" %}
+        {% set ns.count = ns.count + 1 %}
+        {{ task_card(task) }}
+        {% endif %}
+        {% endfor %}
+        {% if ns.count == 0 %}
+        <div class="text-center text-muted small py-5">No in progress tasks.</div>
+        {% endif %}
+    </section>
+
+    <section class="kanban-column">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <div class="stat-icon stat-green"><i class="bi bi-check-circle"></i></div>
+                <h2 class="h6 fw-bold mb-0">Done</h2>
+            </div>
+        </div>
+        {% set ns = namespace(count=0) %}
+        {% for task in project.tasks %}
+        {% if task.status == "done" %}
+        {% set ns.count = ns.count + 1 %}
+        {{ task_card(task) }}
+        {% endif %}
+        {% endfor %}
+        {% if ns.count == 0 %}
+        <div class="text-center text-muted small py-5">No done tasks.</div>
+        {% endif %}
+    </section>
 </div>
 {% endblock %}

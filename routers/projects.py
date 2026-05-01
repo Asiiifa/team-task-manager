@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
+from sqlalchemy.orm import selectinload
 from datetime import date
 
 from auth import get_current_user, require_admin
@@ -14,11 +15,17 @@ router = APIRouter(prefix="/projects")
 @router.get("")
 def projects_page(request: Request, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user.role == "admin":
-        projects = db.query(Project).order_by(Project.created_at.desc()).all()
+        projects = (
+            db.query(Project)
+            .options(selectinload(Project.members), selectinload(Project.tasks))
+            .order_by(Project.created_at.desc())
+            .all()
+        )
         users = db.query(User).order_by(User.username).all()
     else:
         projects = (
             db.query(Project)
+            .options(selectinload(Project.members), selectinload(Project.tasks))
             .join(ProjectMember)
             .filter(ProjectMember.user_id == current_user.id)
             .order_by(Project.created_at.desc())
@@ -54,7 +61,16 @@ def project_detail(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    project = db.get(Project, project_id)
+    project = (
+        db.query(Project)
+        .options(
+            selectinload(Project.members).selectinload(ProjectMember.user),
+            selectinload(Project.tasks).selectinload(Task.project),
+            selectinload(Project.tasks).selectinload(Task.assigned_user),
+        )
+        .filter(Project.id == project_id)
+        .first()
+    )
     if not project:
         return RedirectResponse("/projects", status_code=status.HTTP_303_SEE_OTHER)
     if current_user.role != "admin" and not _is_member(db, project_id, current_user.id):

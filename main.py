@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, Response
 from fastapi.templating import Jinja2Templates
 
 from database import Base, engine
@@ -20,6 +20,11 @@ def on_startup():
 @app.get("/")
 def root():
     return RedirectResponse("/dashboard")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return Response(status_code=204)
 
 
 app.include_router(auth_router.router)

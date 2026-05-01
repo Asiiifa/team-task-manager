@@ -11,26 +11,66 @@
 </div>
 
 <div class="row g-3 mb-4">
-    {% for label, key, icon, color in [
-        ("Total Tasks", "total", "bi-list-task", "blue"),
-        ("Todo", "todo", "bi-exclamation-circle", "red"),
-        ("In Progress", "in_progress", "bi-hourglass-split", "yellow"),
-        ("Done", "done", "bi-check-circle", "green"),
-        ("Overdue", "overdue", "bi-alarm", "dark")
-    ] %}
     <div class="col-sm-6 col-xl">
         <div class="soft-card stat-card h-100">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="stat-icon stat-{{ color }}"><i class="bi {{ icon }}"></i></div>
-                    <span class="badge rounded-pill text-bg-light">{{ label }}</span>
+                    <div class="stat-icon stat-blue"><i class="bi bi-list-task"></i></div>
+                    <span class="badge rounded-pill text-bg-light">Total Tasks</span>
                 </div>
-                <div class="display-6 fw-bold mb-1">{{ stats[key] }}</div>
+                <div class="display-6 fw-bold mb-1">{{ total_count }}</div>
                 <div class="text-muted small">Current assigned work</div>
             </div>
         </div>
     </div>
-    {% endfor %}
+    <div class="col-sm-6 col-xl">
+        <div class="soft-card stat-card h-100">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="stat-icon stat-red"><i class="bi bi-exclamation-circle"></i></div>
+                    <span class="badge rounded-pill text-bg-light">Todo</span>
+                </div>
+                <div class="display-6 fw-bold mb-1">{{ todo_count }}</div>
+                <div class="text-muted small">Current assigned work</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl">
+        <div class="soft-card stat-card h-100">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="stat-icon stat-yellow"><i class="bi bi-hourglass-split"></i></div>
+                    <span class="badge rounded-pill text-bg-light">In Progress</span>
+                </div>
+                <div class="display-6 fw-bold mb-1">{{ in_progress_count }}</div>
+                <div class="text-muted small">Current assigned work</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl">
+        <div class="soft-card stat-card h-100">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="stat-icon stat-green"><i class="bi bi-check-circle"></i></div>
+                    <span class="badge rounded-pill text-bg-light">Done</span>
+                </div>
+                <div class="display-6 fw-bold mb-1">{{ done_count }}</div>
+                <div class="text-muted small">Current assigned work</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl">
+        <div class="soft-card stat-card h-100">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="stat-icon stat-dark"><i class="bi bi-alarm"></i></div>
+                    <span class="badge rounded-pill text-bg-light">Overdue</span>
+                </div>
+                <div class="display-6 fw-bold mb-1">{{ overdue_count }}</div>
+                <div class="text-muted small">Current assigned work</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="soft-card">
@@ -50,14 +90,14 @@
             </tr>
             </thead>
             <tbody>
-            {% for task in tasks[:10] %}
+            {% for task in recent_tasks %}
             <tr>
                 <td class="fw-semibold">{{ task.title }}</td>
-                <td>{{ task.project.name }}</td>
-                <td>{{ task.assigned_user.username }}</td>
+                <td>{{ task.project_name }}</td>
+                <td>{{ task.assigned_username }}</td>
                 <td>{{ task.due_date }}</td>
                 <td>
-                    {% if task.status != 'done' and task.due_date < today %}
+                    {% if task.is_overdue %}
                     <span class="status-badge status-overdue">Overdue</span>
                     {% elif task.status == 'done' %}
                     <span class="status-badge status-done">Done</span>

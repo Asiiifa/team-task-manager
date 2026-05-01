@@ -3,6 +3,7 @@ from datetime import date
 from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
+from sqlalchemy.orm import selectinload
 
 from auth import get_current_user, require_admin
 from database import get_db
@@ -16,12 +17,18 @@ VALID_STATUSES = {"todo", "in_progress", "done"}
 @router.get("")
 def tasks_page(request: Request, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     if current_user.role == "admin":
-        tasks = db.query(Task).order_by(Task.due_date.asc()).all()
+        tasks = (
+            db.query(Task)
+            .options(selectinload(Task.project), selectinload(Task.assigned_user))
+            .order_by(Task.due_date.asc())
+            .all()
+        )
         projects = db.query(Project).order_by(Project.name).all()
         users = db.query(User).order_by(User.username).all()
     else:
         tasks = (
             db.query(Task)
+            .options(selectinload(Task.project), selectinload(Task.assigned_user))
             .filter(Task.assigned_user_id == current_user.id)
             .order_by(Task.due_date.asc())
             .all()
