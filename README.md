@@ -5,13 +5,14 @@ A full-stack Team Task Manager web application built with FastAPI, Jinja2 templa
 Live URL: https://web-production-7c4d1.up.railway.app
 
 ## Features
-<img width="1918" height="973" alt="project-05-01 234709" src="https://github.com/user-attachments/assets/bbfbaec3-c641-483c-9e27-b7b965f7a414" />
 
-<img width="1918" height="973" alt="project-05-01 234709" src="https://github.com/user-attachments/assets/460c9177-8f1b-45c6-9971-5c9a06b5f06f" />
+<img width="1918" height="981" alt="Screenshot 2026-05-01 234356" src="https://github.com/user-attachments/assets/7e3a9f3b-d98d-4994-b3b4-e0756418e937" />
+
+<img width="1918" height="973" alt="project-05-01 234709" src="https://github.com/user-attachments/assets/bbfbaec3-c641-483c-9e27-b7b965f7a414" />
 
 <img width="1918" height="986" alt="task manager234356" src="https://github.com/user-attachments/assets/0f5251d9-89f8-4290-8f8f-f32412dd1879" />
 
-<img width="1918" height="986" alt="task manager234356" src="https://github.com/user-attachments/assets/94254b70-5d1b-4ee4-824b-7f3081ee634d" />
+
 
 
 - User signup, login, and logout
