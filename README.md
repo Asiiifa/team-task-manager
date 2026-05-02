@@ -2,7 +2,7 @@
 
 A full-stack Team Task Manager web application built with FastAPI, Jinja2 templates, SQLite, and Bootstrap 5. The app supports role-based project and task management for admins and members, with JWT authentication stored securely in HTTP-only cookies.
 
-Live URL: https://web-production-7c4d1.up.railway.app
+Live URL: [https://web-production-7c4d1.up.railway.app](https://web-production-4ddb83.up.railway.app)
 
 ## Features
 
